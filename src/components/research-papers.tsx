@@ -14,18 +14,12 @@ export function ResearchPapers() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Simulate API fetch with a delay
     const fetchData = async () => {
       setLoading(true)
       try {
-        // In a real app, you would fetch from an API here
-        // const response = await fetch('/api/research-papers')
-        // const data = await response.json()
         const sdk = await SuperAppSDK.create("super-secret-key")
 
-        //         // Call Ku Research get-research function
         const result = await sdk.callFunction(
-          "http://host.docker.internal:8083",
           "Ku Book",
           "Ku Research",
           "get-research",
@@ -33,9 +27,6 @@ export function ResearchPapers() {
         )
         setPapers(result.papers)
         setLoading(false)
-
-        // Using mock data for now
-        // setPapers(mockResearchPapers)
       } catch (error) {
         console.error("Error fetching research papers:", error)
         setLoading(false)
