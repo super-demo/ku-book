@@ -2,12 +2,12 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import { Heart } from "lucide-react"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import type { Book } from "@/types/book"
+import { Heart } from "lucide-react"
+import Image from "next/image"
+import { useEffect, useState } from "react"
 
 interface BookCardProps {
   book: Book
@@ -43,11 +43,17 @@ export function BookCard({ book, onClick }: BookCardProps) {
   }
 
   return (
-    <Card className="overflow-hidden cursor-pointer transition-all hover:shadow-md" onClick={onClick}>
-      <CardContent className="p-0 relative">
-        <div className="aspect-[2/3] relative">
+    <Card
+      className="cursor-pointer overflow-hidden transition-all hover:shadow-md"
+      onClick={onClick}
+    >
+      <CardContent className="relative p-0">
+        <div className="relative aspect-[2/3]">
           <Image
-            src={book.coverImage || "/placeholder.svg?height=450&width=300"}
+            src={
+              book.coverImage ||
+              "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/icons/file-text.svg"
+            }
             alt={book.title}
             fill
             className="object-cover"
@@ -56,22 +62,31 @@ export function BookCard({ book, onClick }: BookCardProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm hover:bg-background/90"
+          className="bg-background/80 hover:bg-background/90 absolute top-2 right-2 backdrop-blur-sm"
           onClick={toggleFavorite}
         >
-          <Heart className={`h-5 w-5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
-          <span className="sr-only">{isFavorite ? "Remove from favorites" : "Add to favorites"}</span>
+          <Heart
+            className={`h-5 w-5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`}
+          />
+          <span className="sr-only">
+            {isFavorite ? "Remove from favorites" : "Add to favorites"}
+          </span>
         </Button>
       </CardContent>
       <CardFooter className="flex flex-col items-start p-4">
-        <h3 className="font-semibold line-clamp-1">{book.title}</h3>
-        <p className="text-sm text-muted-foreground line-clamp-1">{book.author}</p>
-        <div className="flex items-center justify-between w-full mt-2">
-          <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">{book.genre}</span>
-          <span className="text-xs text-muted-foreground">{book.publishedYear}</span>
+        <h3 className="line-clamp-1 font-semibold">{book.title}</h3>
+        <p className="text-muted-foreground line-clamp-1 text-sm">
+          {book.author}
+        </p>
+        <div className="mt-2 flex w-full items-center justify-between">
+          <span className="bg-primary/10 text-primary rounded-full px-2 py-1 text-xs">
+            {book.genre}
+          </span>
+          <span className="text-muted-foreground text-xs">
+            {book.publishedYear}
+          </span>
         </div>
       </CardFooter>
     </Card>
   )
 }
-

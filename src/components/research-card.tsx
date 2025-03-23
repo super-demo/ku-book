@@ -2,13 +2,13 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import { Heart } from "lucide-react"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import type { ResearchPaper } from "@/types/research"
+import { Heart } from "lucide-react"
+import Image from "next/image"
+import { useEffect, useState } from "react"
 
 interface ResearchCardProps {
   paper: ResearchPaper
@@ -31,7 +31,9 @@ export function ResearchCard({ paper, onClick }: ResearchCardProps) {
     e.stopPropagation()
 
     const storedFavorites = localStorage.getItem("favoriteResearch")
-    let favorites: ResearchPaper[] = storedFavorites ? JSON.parse(storedFavorites) : []
+    let favorites: ResearchPaper[] = storedFavorites
+      ? JSON.parse(storedFavorites)
+      : []
 
     if (isFavorite) {
       favorites = favorites.filter((fav: ResearchPaper) => fav.id !== paper.id)
@@ -44,11 +46,17 @@ export function ResearchCard({ paper, onClick }: ResearchCardProps) {
   }
 
   return (
-    <Card className="overflow-hidden cursor-pointer transition-all hover:shadow-md" onClick={onClick}>
-      <CardContent className="p-0 relative">
-        <div className="aspect-video relative">
+    <Card
+      className="cursor-pointer overflow-hidden transition-all hover:shadow-md"
+      onClick={onClick}
+    >
+      <CardContent className="relative p-0">
+        <div className="relative aspect-video">
           <Image
-            src={paper.coverImage || "/placeholder.svg?height=300&width=500"}
+            src={
+              paper.coverImage ||
+              "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/svgs/solid/book.svg"
+            }
             alt={paper.title}
             fill
             className="object-cover"
@@ -57,17 +65,23 @@ export function ResearchCard({ paper, onClick }: ResearchCardProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm hover:bg-background/90"
+          className="bg-background/80 hover:bg-background/90 absolute top-2 right-2 backdrop-blur-sm"
           onClick={toggleFavorite}
         >
-          <Heart className={`h-5 w-5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
-          <span className="sr-only">{isFavorite ? "Remove from favorites" : "Add to favorites"}</span>
+          <Heart
+            className={`h-5 w-5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`}
+          />
+          <span className="sr-only">
+            {isFavorite ? "Remove from favorites" : "Add to favorites"}
+          </span>
         </Button>
       </CardContent>
       <CardFooter className="flex flex-col items-start p-4">
-        <h3 className="font-semibold line-clamp-2">{paper.title}</h3>
-        <p className="text-sm text-muted-foreground line-clamp-1 mb-2">{paper.authors}</p>
-        <div className="flex flex-wrap gap-1 mb-2">
+        <h3 className="line-clamp-2 font-semibold">{paper.title}</h3>
+        <p className="text-muted-foreground mb-2 line-clamp-1 text-sm">
+          {paper.authors}
+        </p>
+        <div className="mb-2 flex flex-wrap gap-1">
           {paper.classifications.slice(0, 2).map((classification, index) => (
             <Badge key={index} variant="outline" className="text-xs">
               {classification}
@@ -79,12 +93,15 @@ export function ResearchCard({ paper, onClick }: ResearchCardProps) {
             </Badge>
           )}
         </div>
-        <div className="flex items-center justify-between w-full">
-          <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">{paper.field}</span>
-          <span className="text-xs text-muted-foreground">{paper.publishedYear}</span>
+        <div className="flex w-full items-center justify-between">
+          <span className="bg-primary/10 text-primary rounded-full px-2 py-1 text-xs">
+            {paper.field}
+          </span>
+          <span className="text-muted-foreground text-xs">
+            {paper.publishedYear}
+          </span>
         </div>
       </CardFooter>
     </Card>
   )
 }
-
