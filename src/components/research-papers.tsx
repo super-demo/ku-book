@@ -4,10 +4,12 @@ import { ResearchCard } from "@/components/research-card"
 import { ResearchDetail } from "@/components/research-detail"
 import { Input } from "@/components/ui/input"
 import type { ResearchPaper } from "@/types/research"
+import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 import SuperAppSDK from "../lib/sdk/typescript/main"
 
 export function ResearchPapers() {
+  const { data: session, status } = useSession()
   const [papers, setPapers] = useState<ResearchPaper[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedPaper, setSelectedPaper] = useState<ResearchPaper | null>(null)
@@ -19,11 +21,16 @@ export function ResearchPapers() {
       try {
         const sdk = await SuperAppSDK.create("super-secret-key")
 
+        const userId = session?.user?.jwt?.userId
+          ? Number(session.user.jwt.userId)
+          : 0
         const result = await sdk.callFunction(
           "Ku Book",
           "Ku Research",
           "get-research",
-          {}
+          {
+            userId: userId
+          }
         )
         setPapers(result.papers)
         setLoading(false)
